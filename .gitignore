@@ -12,6 +12,12 @@ test/tmp
 test/version_tmp
 tmp
 
+Gemfile.lock
+
+# RubyMine
+.idea/
+
+
 # YARD artifacts
 .yardoc
 _yardoc
