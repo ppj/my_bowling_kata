@@ -183,6 +183,34 @@ describe Bowling do
       end
     end
 
+    context "when hits a spare in the last 2 frames" do
+      it "gets the bonus for the 9th frame and extra roll for 10th but no bonuses" do
+        8.times {
+          subject.roll(2)
+          subject.roll(3)
+        }
+        hit_spare(5)
+        hit_spare(4)
+        subject.roll(7)
+        subject.score
+        subject.frame_scores.should == [5,5,5,5,5,5,5,5,14,17]
+      end
+    end
+
+    context "when hits a strike in the 9th frame and a spare in the last frame" do
+      it "gets the bonus for the 9th frame and extra roll for 10th but no bonuses" do
+        8.times {
+          subject.roll(2)
+          subject.roll(3)
+        }
+        hit_strike
+        hit_spare(4)
+        subject.roll(7)
+        subject.score
+        subject.frame_scores.should == [5,5,5,5,5,5,5,5,20,17]
+      end
+    end
+
   end
 
 end

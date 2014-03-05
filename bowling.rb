@@ -21,52 +21,52 @@ class Bowling
     @roll_scores.push(pins)
   end
 
-  def score
+  def is_strike?
+    @frame_scores[-1] == 10
+  end
+
+  def strike_bonus roll_index
+    @roll_scores[roll_index+1]+@roll_scores[roll_index+2]
+  end
+
+  def is_spare?
+    @frame_scores[-1] == 10
+  end
+
+  def spare_bonus roll_index
+    @roll_scores[roll_index+2]
+  end
+
+  def score_last_frame roll_index
+    @frame_scores[-1] += roll_scores[roll_index+1]
+    if @frame_scores[-1] >= 10
+      @frame_scores[-1] += roll_scores[roll_index+2]
+    end
+  end
+
+  def calculate_frame_scores
     roll_index  = 0
     10.times do
       frame_scores.push roll_scores[roll_index]
       if @frame_scores.length < 10
-        if @frame_scores[-1] == 10
-          @frame_scores[-1] += @roll_scores[roll_index+1]+@roll_scores[roll_index+2]
+        if is_strike?
+          @frame_scores[-1] += strike_bonus(roll_index)
           roll_index += 1
         else
           frame_scores[-1] += roll_scores[roll_index+1]
-          if @frame_scores[-1] == 10
-              @frame_scores[-1] += roll_scores[roll_index+2]
+          if is_spare?
+              @frame_scores[-1] += spare_bonus(roll_index)
           end
           roll_index += 2
         end
       else
-        @frame_scores[-1] += roll_scores[roll_index+1]
-        if @frame_scores[-1] >= 10
-          @frame_scores[-1] += roll_scores[roll_index+2]
-        end
+        score_last_frame roll_index
       end
     end
-
-    @frame_scores.inject(0) { |total_score, frame_score | total_score + frame_score }
   end
 
-  def score_OLD
-    frame_roll_index = 1
-    @roll_scores.each_with_index do |roll_score, roll_index|
-      if frame_roll_index == 1
-        @frame_scores.push roll_score
-        if @frame_scores.length < 10 and roll_score == 10 # strike
-          @frame_scores[-1] += @roll_scores[roll_index+1]+@roll_scores[roll_index+2]
-        else
-          frame_roll_index = 2
-        end
-      else
-        @frame_scores[-1] += roll_score
-        if @frame_scores.length < 10
-          frame_roll_index = 1
-          if @frame_scores[-1]==10  # spare
-            frame_scores[-1] += roll_scores[roll_index+1]
-          end
-        end
-      end
-    end
+  def score
+    calculate_frame_scores
     @frame_scores.inject(0) { |total_score, frame_score | total_score + frame_score }
   end
 
