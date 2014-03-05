@@ -22,12 +22,38 @@ class Bowling
   end
 
   def score
+    roll_index  = 0
+    10.times do
+      frame_scores.push roll_scores[roll_index]
+      if @frame_scores.length < 10
+        if @frame_scores[-1] == 10
+          @frame_scores[-1] += @roll_scores[roll_index+1]+@roll_scores[roll_index+2]
+          roll_index += 1
+        else
+          frame_scores[-1] += roll_scores[roll_index+1]
+          if @frame_scores[-1] == 10
+              @frame_scores[-1] += roll_scores[roll_index+2]
+          end
+          roll_index += 2
+        end
+      else
+        @frame_scores[-1] += roll_scores[roll_index+1]
+        if @frame_scores[-1] >= 10
+          @frame_scores[-1] += roll_scores[roll_index+2]
+        end
+      end
+    end
+
+    @frame_scores.inject(0) { |total_score, frame_score | total_score + frame_score }
+  end
+
+  def score_OLD
     frame_roll_index = 1
     @roll_scores.each_with_index do |roll_score, roll_index|
       if frame_roll_index == 1
         @frame_scores.push roll_score
         if @frame_scores.length < 10 and roll_score == 10 # strike
-          frame_scores[-1] += roll_scores[roll_index+1]+roll_scores[roll_index+2]
+          @frame_scores[-1] += @roll_scores[roll_index+1]+@roll_scores[roll_index+2]
         else
           frame_roll_index = 2
         end
@@ -41,7 +67,7 @@ class Bowling
         end
       end
     end
-    @frame_scores.inject(0) { |total_score, frame_score| total_score + frame_score }
+    @frame_scores.inject(0) { |total_score, frame_score | total_score + frame_score }
   end
 
 end
