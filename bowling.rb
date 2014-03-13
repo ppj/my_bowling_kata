@@ -37,7 +37,7 @@ class Bowling
     @roll_scores[roll_index+2]
   end
 
-  def score_last_frame roll_index
+  def score_10th_frame roll_index
     @frame_scores[-1] += roll_scores[roll_index+1]
     if @frame_scores[-1] >= 10
       @frame_scores[-1] += roll_scores[roll_index+2]
@@ -60,7 +60,7 @@ class Bowling
           roll_index += 2
         end
       else
-        score_last_frame roll_index
+        score_10th_frame roll_index
       end
     end
   end
