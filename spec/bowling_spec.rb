@@ -22,6 +22,48 @@ describe Bowling do
       expect {subject.roll(12)}.to raise_error("invalid roll-score")
     end
 
+    context "when hasn't finished the game yet, but" do
+      it "has rolled 4 strikes so far, scores 90" do
+        4.times {hit_strike}
+        subject.score.should eql(90)
+      end
+
+      it "has rolled 10-10-10-6-4-7 so far, scores 100" do
+        3.times {hit_strike}
+        hit_spare(6)
+        subject.roll(7)
+        subject.score.should eql(100)
+      end
+
+      context "is in the last frame, and" do
+        it "has not rolled yet" do
+          9.times {hit_spare(2)}
+          subject.score.should eql(106)
+        end
+        it "has rolled strikes in all previous frames and 1 strike so far" do
+          10.times {hit_strike}
+          subject.score.should eql(270)
+        end
+        it "has rolled strikes in all previous frames and 2 strikes so far" do
+          11.times {hit_strike}
+          subject.score.should eql(290)
+        end
+        it "has rolled spares in all previous frames and 1 strike so far" do
+          9.times {hit_spare(6)}
+          hit_strike
+          subject.score.should eql(158)
+        end
+        it "has rolled spares in all previous frames and 2 strikes so far" do
+          9.times {hit_spare(3)}
+          hit_strike
+          subject.score.should eql(134)
+        end
+        it "has rolled spares in all previous frames and another spare so far" do
+          10.times {hit_spare(9)}
+          subject.score.should eql(181)
+        end
+      end
+    end
     it "cannot roll more than 21 times" do
       18.times {subject.roll(4)}
       hit_spare(7)
